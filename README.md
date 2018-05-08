@@ -1,2 +1,2 @@
 # Ceybit-crowdsale-contracts
-Ceybit(CYBT) ERC20 Token and Crowdsalesmart contracts
+Ceybit(CYBT) ERC20 Token and Crowdsale smart contracts
