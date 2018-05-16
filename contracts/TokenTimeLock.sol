@@ -27,7 +27,7 @@ contract TokenTimelock {
     public
   {
     // solium-disable-next-line security/no-block-members
-    require(_releaseTime > block.timestamp);
+    require(_releaseTime > now);
     token = _token;
     beneficiary = _beneficiary;
     releaseTime = _releaseTime;
@@ -38,7 +38,7 @@ contract TokenTimelock {
    */
   function release() public {
     // solium-disable-next-line security/no-block-members
-    require(block.timestamp >= releaseTime);
+    require(now >= releaseTime);
 
     uint256 amount = token.balanceOf(this);
     require(amount > 0);

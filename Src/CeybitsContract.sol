@@ -152,7 +152,7 @@ contract TokenTimelock {
     public
   {
     // solium-disable-next-line security/no-block-members
-    require(_releaseTime > block.timestamp);
+    require(_releaseTime > now);
     token = _token;
     beneficiary = _beneficiary;
     releaseTime = _releaseTime;
@@ -163,7 +163,7 @@ contract TokenTimelock {
    */
   function release() public {
     // solium-disable-next-line security/no-block-members
-    require(block.timestamp >= releaseTime);
+    require(now >= releaseTime);
 
     uint256 amount = token.balanceOf(this);
     require(amount > 0);
@@ -539,10 +539,10 @@ contract FreezableToken is StandardToken, Ownable {
 
 
 /**
- * @title Ceybit Token smart contract
+ * @title Ceybits Token smart contract
  */
-contract CeybitToken is FreezableToken, PausableToken {
-    string public constant name = "\"Ceybit\" Utility Token";
+contract CeybitsToken is FreezableToken, PausableToken {
+    string public constant name = "\"Ceybits\" Utility Token";
     string public constant symbol = "CYBT";
     uint8 public constant decimals = 18;
 
@@ -561,9 +561,9 @@ contract CeybitToken is FreezableToken, PausableToken {
     address public usersGrowthLockedTokensAddress;
     
     // Lock times
-    uint256 internal teamTokensLockTime = uint256(block.timestamp) + 1 years; // Lock for 1 year
-    uint256 internal companyReserveTokensLockTime = uint256(block.timestamp) + 1 years; // Lock for 1 year
-    uint256 internal usersGrowthReserveTokensLockTime = uint256(block.timestamp) + 180 days; // Lock for 6 months
+    uint256 internal teamTokensLockTime = uint256(now) + 60 second; // Lock for 1 year
+    uint256 internal companyReserveTokensLockTime = uint256(now) + 1 years; // Lock for 1 year
+    uint256 internal usersGrowthReserveTokensLockTime = uint256(now) + 180 days; // Lock for 6 months
     
     // Tokens distribution
     uint256 internal bountyTokensAmount; // 2% of tokens for bounty
@@ -623,9 +623,9 @@ contract CeybitToken is FreezableToken, PausableToken {
 
 
 /**
- * @title Ceybit project crowdsale smart contract
+ * @title Ceybits project crowdsale smart contract
  */
-contract CeybitICO is Ownable {
+contract CeybitsICO is Ownable {
     using SafeMath for uint256;
 
     uint256 public rate = 100; // 1 ETH = 100 CYBT
@@ -634,7 +634,7 @@ contract CeybitICO is Ownable {
     
     uint256 public stage = 0;
 
-    CeybitToken public token; // The token which being sold
+    CeybitsToken public token; // The token which being sold
     
     event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
     event StageStarted(uint256 tokens, uint256 startDate);
@@ -655,7 +655,7 @@ contract CeybitICO is Ownable {
     constructor(address _tokenAddress) Ownable() public {
         require(_tokenAddress != 0x0);
         
-        token = CeybitToken(_tokenAddress);
+        token = CeybitsToken(_tokenAddress);
         token.addCrowdsaleContract(this);
     }
     
