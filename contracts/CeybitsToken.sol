@@ -28,8 +28,8 @@ contract CeybitsToken is FreezableToken, PausableToken {
     address public usersGrowthLockedTokensAddress;
     
     // Lock times
-    uint256 internal teamTokensLockTime = uint256(now) + 1 years; // Lock for 1 year
-    uint256 internal companyReserveTokensLockTime = uint256(now) + 1 years; // Lock for 1 year
+    uint256 internal teamTokensLockTime = uint256(now) + 365 days; // Lock for 1 year
+    uint256 internal companyReserveTokensLockTime = uint256(now) + 365 days; // Lock for 1 year
     uint256 internal usersGrowthReserveTokensLockTime = uint256(now) + 180 days; // Lock for 6 months
     
     // Tokens distribution

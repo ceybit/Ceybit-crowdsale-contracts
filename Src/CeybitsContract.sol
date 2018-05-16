@@ -561,8 +561,8 @@ contract CeybitsToken is FreezableToken, PausableToken {
     address public usersGrowthLockedTokensAddress;
     
     // Lock times
-    uint256 internal teamTokensLockTime = uint256(now) + 1 years; // Lock for 1 year
-    uint256 internal companyReserveTokensLockTime = uint256(now) + 1 years; // Lock for 1 year
+    uint256 internal teamTokensLockTime = uint256(now) + 365 days; // Lock for 1 year
+    uint256 internal companyReserveTokensLockTime = uint256(now) + 365 days; // Lock for 1 year
     uint256 internal usersGrowthReserveTokensLockTime = uint256(now) + 180 days; // Lock for 6 months
     
     // Tokens distribution
@@ -639,6 +639,9 @@ contract CeybitsICO is Ownable {
     event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
     event StageStarted(uint256 tokens, uint256 startDate);
     event StageFinished(uint256 time);
+    event EthClaimed(uint256 amount);
+    event RateChanges(uint256 oldRate, uint256 newRate);
+
     
     struct Ico {
         uint256 tokens;    // Tokens in crowdsale
@@ -785,6 +788,7 @@ contract CeybitsICO is Ownable {
     */
     function _forwardFunds() internal {
         owner.transfer(msg.value);
+        emit EthClaimed(msg.value);
     }
     
     /**
@@ -793,6 +797,13 @@ contract CeybitsICO is Ownable {
     */
     function _postValidatePurchase(uint256 _weiAmount) internal {      
         weiRaised = weiRaised.add(_weiAmount);
+    }
+
+    function _changeRate(uint256 _newRate) public onlyOwner {
+      require(_newRate != 0);
+      emit RateChanges(rate, _newRate);
+
+      rate = _newRate;
     }
     
     /**
