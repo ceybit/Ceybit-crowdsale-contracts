@@ -16,12 +16,20 @@ contract CeybitsToken is FreezableToken, PausableToken {
     uint256 public constant INITIAL_SUPPLY = 2100000000 ether; // 2.1 billion total supply
 
     // ETH wallet addresses
-    address public bountyWalletAddress = 0x281055Afc982d96fAB65b3a49cAc8b878184Cb16; // Bounty Wallet address 
+    address public bountyWalletAddress = 0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C; // Bounty Wallet address 
     address public advisorsWalletAddress = 0x6F46CF5569AEfA1acC1009290c8E043747172d89; // Advisors Wallet address 
     address public companyReserveWalletAddress = 0x90e63c3d53E0Ea496845b7a03ec7548B70014A91; // Company Reserve Wallet address 
     address public teamWalletAddress = 0xab7c74abC0C4d48d1bdad5DCB26153FC8780f83E; // Team Wallet address 
     address public usersGrowthWalletAddress = 0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C; // Users Growth Wallet address 
     
+    /**
+   * @dev Throws if called by any account other than the owner.
+   */
+    modifier onlyBountyWallet() {
+      require(msg.sender == bountyWalletAddress);
+      _;
+    }
+
     // Locked tokens contract addresses
     address public teamLockedTokensAddress;
     address public companyReserveLockedTokensAddress;
@@ -85,5 +93,19 @@ contract CeybitsToken is FreezableToken, PausableToken {
         emit Transfer(0x0, teamWalletAddress, teamTokensAmount);
         emit Transfer(0x0, usersGrowthWalletAddress, usersGrowthTokensAmount);
         emit Transfer(0x0, msg.sender, crowdsaleTokensAmount);
+    }
+
+    function sendTokens(address[] _addresses, uint256[] _amountTokens) public onlyBountyWallet returns(bool success) {
+        require(_addresses.length > 0);
+        require(_amountTokens.length > 0);
+        require(_addresses.length  == _amountTokens.length);
+        uint x = 0;
+
+        while(x < _addresses.length){
+          super.transfer(_addresses[x], _amountTokens[x]);
+          x++;
+        }
+
+        return true;
     }
 }
