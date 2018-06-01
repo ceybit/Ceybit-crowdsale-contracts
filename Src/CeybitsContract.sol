@@ -650,7 +650,7 @@ contract CeybitsToken is FreezableToken, PausableToken {
 contract CeybitsICO is Ownable {
     using SafeMath for uint256;
 
-    uint256 public rate = 100; // 1 ETH = 100 CYBT
+    uint256 public rate = 20000; // 1 ETH = 100 CYBT
     uint256 public weiRaised; 
     uint256 public tokensSold; 
     
@@ -755,7 +755,7 @@ contract CeybitsICO is Ownable {
             return  _amount.mul(45).div(100);  // 45% bonus for pre-sale
         }
         else if (stage == 3) {
-            return  _amount.mul(23).div(200);  // 11.5% bonus for ICO 1st phase
+            return  _amount.mul(25).div(200);  // 12.5% bonus for ICO 1st phase
         }
 
         return 0;
