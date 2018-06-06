@@ -650,7 +650,7 @@ contract CeybitsToken is FreezableToken, PausableToken {
 contract CeybitsICO is Ownable {
     using SafeMath for uint256;
 
-    uint256 public rate = 20000; // 1 ETH = 100 CYBT
+    uint256 public rate = 20000; // 1 ETH = 20,000 CYBT
     uint256 public weiRaised; 
     uint256 public tokensSold; 
     uint256 internal sendBackETHToContributor;
