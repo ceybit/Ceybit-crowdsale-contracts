@@ -653,7 +653,7 @@ contract CeybitsICO is Ownable {
     uint256 public rate = 20000; // 1 ETH = 100 CYBT
     uint256 public weiRaised; 
     uint256 public tokensSold; 
-    
+    uint256 internal sendBackETHToContributor;
     uint256 public stage = 0;
 
     CeybitsToken public token; // The token which being sold
@@ -720,14 +720,24 @@ contract CeybitsICO is Ownable {
     
         // calculate token amount to be created
         uint256 tokens = _getTokenAmount(weiAmount);
-        require(ICO.tokens >= tokens); 
-    
-        _processPurchase(_beneficiary, tokens);
+        
+        if(ICO.tokens < tokens) {       
+            sendBackETHToContributor = msg.value.sub(ICO.tokens.sub(_calculateBonus(ICO.tokens)).div(rate)); // Calculate price for available tokens count
+            tokens = ICO.tokens;
+            
+            token.transfer(_beneficiary, tokens);
+            _beneficiary.transfer(sendBackETHToContributor);
+            
+            weiAmount = weiAmount.sub(sendBackETHToContributor);
+        } else {
+            _processPurchase(_beneficiary, tokens);
+        }
+        
         emit TokenPurchase( msg.sender, _beneficiary, weiAmount, tokens);
     
         _updatePurchasingState(tokens);
     
-        _forwardFunds();
+        _forwardFunds(weiAmount);
         _postValidatePurchase(weiAmount);
     }
   
@@ -737,7 +747,7 @@ contract CeybitsICO is Ownable {
      * @return Number of tokens that can be purchased with the specified _weiAmount
     */
     function _getTokenAmount(uint256 _weiAmount) internal view returns (uint256) {
-        uint256 tokens =  _weiAmount.mul(rate);
+        uint256 tokens = _weiAmount.mul(rate);
         tokens = tokens.add(_calculateBonus(tokens));
 
         return tokens;
@@ -787,7 +797,7 @@ contract CeybitsICO is Ownable {
      * @param _beneficiary Address performing the token purchase
      * @param _tokenAmount Number of tokens to be emitted
     */
-    function _deliverTokens(address _beneficiary, uint256 _tokenAmount) internal {
+    function _deliverTokens(address _beneficiary, uint256 _tokenAmount) internal returns(bool){
         token.transfer(_beneficiary, _tokenAmount);
     }
     
@@ -808,9 +818,9 @@ contract CeybitsICO is Ownable {
     /**
      * @dev Determines how ETH is stored/forwarded on purchases.
     */
-    function _forwardFunds() internal {
-        owner.transfer(msg.value);
-        emit EthClaimed(msg.value);
+    function _forwardFunds(uint256 _weiAmount) internal {
+        owner.transfer(_weiAmount);
+        emit EthClaimed(_weiAmount);
     }
     
     /**
