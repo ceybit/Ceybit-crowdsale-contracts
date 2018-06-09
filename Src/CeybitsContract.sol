@@ -542,7 +542,7 @@ contract FreezableToken is StandardToken, Ownable {
  * @title Ceybits Token smart contract
  */
 contract CeybitsToken is FreezableToken, PausableToken {
-    string public constant name = "\"Ceybits\" Utility Token";
+    string public constant name = "Ceybit";
     string public constant symbol = "CYBT";
     uint8 public constant decimals = 18;
 
